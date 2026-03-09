@@ -8,7 +8,7 @@ flowchart LR
   U --> API["Cloudflare Worker API (/api/*)"]
   P --> API
   API --> D1["Cloudflare D1 (SQLite)"]
-  API --> R2["Cloudflare R2 (private attachments)"]
+  API --> KV["Cloudflare KV (attachment blobs)"]
   API --> RL["Durable Object (rate limiter)"]
 ```
 
@@ -16,7 +16,7 @@ flowchart LR
 1. User authenticates at `/api/auth/register|login`; Worker sets secure HttpOnly JWT cookies.
 2. UI calls Worker APIs with cookie-based session (`credentials: include`).
 3. Worker enforces auth + RBAC (self-write, supervisor-read), validates payloads, and writes to D1.
-4. Attachment uploads are validated then stored in private R2; file metadata is persisted in D1.
+4. Attachment uploads are validated then stored in KV; file metadata is persisted in D1.
 5. UI requests short-lived signed URLs for preview/download.
 6. Monthly report endpoint computes summaries from activities/work plans and exports PDF/Word/Excel-compatible output.
 
@@ -31,4 +31,4 @@ flowchart LR
 - Password hashing with `bcryptjs` (cost 12).
 - Rate limiting via Durable Object keyed by user ID / IP.
 - Upload constraints: allowlist MIME + extension and max size 10MB.
-- Private bucket access only through signed short-lived Worker URL tokens.
+- Private file access only through signed short-lived Worker URL tokens.

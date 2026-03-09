@@ -9,7 +9,7 @@ export interface JwtUserPayload {
 
 export interface Env {
   DB: D1Database;
-  FILES_BUCKET: R2Bucket;
+  FILES_KV: KVNamespace;
   RATE_LIMITER: DurableObjectNamespace;
   JWT_ACCESS_SECRET: string;
   JWT_REFRESH_SECRET: string;

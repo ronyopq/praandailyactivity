@@ -73,10 +73,11 @@ uploadRoutes.post("/", async (c) => {
 
   const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
   const key = `${userId}/${activityId}/${Date.now()}-${crypto.randomUUID()}-${safeName}`;
-  await c.env.FILES_BUCKET.put(key, await file.arrayBuffer(), {
-    httpMetadata: {
+  await c.env.FILES_KV.put(key, await file.arrayBuffer(), {
+    metadata: {
       contentType: file.type,
       contentDisposition: `inline; filename="${safeName}"`,
+      originalName: file.name,
     },
   });
 

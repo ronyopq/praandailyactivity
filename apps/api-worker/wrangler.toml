@@ -15,9 +15,9 @@ database_name = "praandailyactivity_db"
 database_id = "c20e6942-e60d-479e-9bcd-81e11d6f0073"
 migrations_dir = "../../db/migrations"
 
-[[r2_buckets]]
-binding = "FILES_BUCKET"
-bucket_name = "smart-work-tracker-files"
+[[kv_namespaces]]
+binding = "FILES_KV"
+id = "93b480ee39354eb8a2bd8537eb0720e9"
 
 [[durable_objects.bindings]]
 name = "RATE_LIMITER"
@@ -29,7 +29,7 @@ new_sqlite_classes = ["RateLimiterDO"]
 
 [env.production.vars]
 APP_ORIGIN = "https://praandailyactivity.pages.dev"
-API_ORIGIN = "https://smart-work-tracker-api.<your-subdomain>.workers.dev"
+API_ORIGIN = "https://smart-work-tracker-api-production.ronybd.workers.dev"
 ACCESS_TOKEN_TTL_SECONDS = "900"
 REFRESH_TOKEN_TTL_SECONDS = "2592000"
 
@@ -39,9 +39,9 @@ database_name = "praandailyactivity_db"
 database_id = "c20e6942-e60d-479e-9bcd-81e11d6f0073"
 migrations_dir = "../../db/migrations"
 
-[[env.production.r2_buckets]]
-binding = "FILES_BUCKET"
-bucket_name = "smart-work-tracker-files"
+[[env.production.kv_namespaces]]
+binding = "FILES_KV"
+id = "93b480ee39354eb8a2bd8537eb0720e9"
 
 [[env.production.durable_objects.bindings]]
 name = "RATE_LIMITER"

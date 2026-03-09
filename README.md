@@ -12,7 +12,7 @@ Production-ready SaaS scaffold for:
 - Frontend: Next.js 14, React, TailwindCSS, shadcn-style UI, FullCalendar
 - Backend: Cloudflare Workers (Hono)
 - Database: Cloudflare D1 (SQLite)
-- Storage: Cloudflare R2 (private)
+- Storage: Cloudflare KV (binary attachments with metadata)
 - Auth: JWT cookie auth (email + password)
 - Deployment: Cloudflare Pages + Workers
 

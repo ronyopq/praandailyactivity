@@ -38,6 +38,7 @@ Auth:
 - `GET /api/files`
 - `GET /api/files/:id/signed-url`
 - `GET /api/files/:id/content?token=...`
+Storage backend: Cloudflare KV (binary value + metadata).
 
 ## Dashboard / Calendar / Reports
 - `GET /api/dashboard/summary`

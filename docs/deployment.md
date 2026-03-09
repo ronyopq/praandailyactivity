@@ -21,9 +21,9 @@ wrangler secret put JWT_REFRESH_SECRET
 ## 3) Provision Cloudflare Resources
 ```bash
 wrangler d1 create smart-work-tracker-db
-wrangler r2 bucket create smart-work-tracker-files
+wrangler kv namespace create praan-files
 ```
-Update `apps/api-worker/wrangler.toml` with the returned `database_id`.
+Update `apps/api-worker/wrangler.toml` with the returned `database_id` and KV namespace `id`.
 
 ## 4) Apply D1 Migrations
 ```bash

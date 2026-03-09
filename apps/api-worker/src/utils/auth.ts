@@ -51,6 +51,9 @@ export async function issueAuthCookies(
   const { accessTtl, refreshTtl } = getTtls(c.env);
   const secureCookies =
     c.env.APP_ORIGIN.startsWith("https://") || c.req.url.startsWith("https://");
+  const requestHost = new URL(c.req.url).hostname;
+  const appHost = new URL(c.env.APP_ORIGIN).hostname;
+  const sameSite: "Lax" | "None" = requestHost === appHost ? "Lax" : "None";
   const accessToken = await signToken(
     { ...payload, type: "access" },
     c.env.JWT_ACCESS_SECRET,
@@ -65,14 +68,14 @@ export async function issueAuthCookies(
   setCookie(c, ACCESS_COOKIE, accessToken, {
     httpOnly: true,
     secure: secureCookies,
-    sameSite: "Lax",
+    sameSite,
     path: "/",
     maxAge: accessTtl,
   });
   setCookie(c, REFRESH_COOKIE, refreshToken, {
     httpOnly: true,
     secure: secureCookies,
-    sameSite: "Lax",
+    sameSite,
     path: "/",
     maxAge: refreshTtl,
   });

@@ -12,6 +12,12 @@ interface FileAccessToken {
   exp: number;
 }
 
+interface FileKvMetadata {
+  contentType?: string;
+  contentDisposition?: string;
+  originalName?: string;
+}
+
 function secretKey(secret: string) {
   return new TextEncoder().encode(secret);
 }
@@ -78,7 +84,10 @@ fileRoutes.get("/:id/signed-url", requireAuth, async (c) => {
     viewerId,
     exp: Math.floor(Date.now() / 1000) + 300,
   });
-  const signedUrl = `${c.env.API_ORIGIN}/api/files/${fileId}/content?token=${encodeURIComponent(token)}`;
+  const apiOrigin = c.env.API_ORIGIN.includes("<your-subdomain>")
+    ? new URL(c.req.url).origin
+    : c.env.API_ORIGIN;
+  const signedUrl = `${apiOrigin}/api/files/${fileId}/content?token=${encodeURIComponent(token)}`;
   return c.json({ data: { url: signedUrl, expiresInSeconds: 300 } });
 });
 
@@ -100,20 +109,31 @@ fileRoutes.get("/:id/content", async (c) => {
       .first<Record<string, unknown>>();
     if (!file) return notFound("File not found");
 
-    const object = await c.env.FILES_BUCKET.get(String(file.r2_key));
-    if (!object || !object.body) return notFound("Stored file object not found");
+    const key = String(file.r2_key);
+    const stored = await c.env.FILES_KV.getWithMetadata<FileKvMetadata>(
+      key,
+      "arrayBuffer",
+    );
+    if (!stored.value) return notFound("Stored file object not found");
 
     const headers = new Headers();
     headers.set(
       "Content-Type",
-      String(file.mime_type || object.httpMetadata?.contentType || "application/octet-stream"),
+      String(
+        file.mime_type ||
+          stored.metadata?.contentType ||
+          "application/octet-stream",
+      ),
     );
     headers.set(
       "Content-Disposition",
-      `inline; filename="${String(file.original_name).replaceAll('"', "_")}"`,
+      String(
+        stored.metadata?.contentDisposition ||
+          `inline; filename="${String(file.original_name).replaceAll('"', "_")}"`,
+      ),
     );
     headers.set("Cache-Control", "private, max-age=60");
-    return new Response(object.body, { headers });
+    return new Response(stored.value, { headers });
   } catch {
     return unauthorized("Invalid or expired file token");
   }
