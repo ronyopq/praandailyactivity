@@ -32,3 +32,17 @@ APP_ORIGIN = "https://praandailyactivity.pages.dev"
 API_ORIGIN = "https://smart-work-tracker-api.<your-subdomain>.workers.dev"
 ACCESS_TOKEN_TTL_SECONDS = "900"
 REFRESH_TOKEN_TTL_SECONDS = "2592000"
+
+[[env.production.d1_databases]]
+binding = "DB"
+database_name = "praandailyactivity_db"
+database_id = "c20e6942-e60d-479e-9bcd-81e11d6f0073"
+migrations_dir = "../../db/migrations"
+
+[[env.production.r2_buckets]]
+binding = "FILES_BUCKET"
+bucket_name = "smart-work-tracker-files"
+
+[[env.production.durable_objects.bindings]]
+name = "RATE_LIMITER"
+class_name = "RateLimiterDO"
