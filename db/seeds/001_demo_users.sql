@@ -1,12 +1,6 @@
-/**
- * Seed SQL generator for SMART WORK TRACKER.
- * Demo login password for both users: Demo@12345
- * Usage:
- *   node --loader ts-node/esm scripts/seed.ts > seed.sql
- *   wrangler d1 execute smart-work-tracker-db --file=seed.sql
- */
+-- SMART WORK TRACKER demo seed
+-- Password for both users: Demo@12345
 
-const sql = `
 INSERT OR IGNORE INTO users (name, email, password_hash, designation, department, timezone)
 VALUES
   ('Demo Manager', 'manager@example.com', '$2a$12$TjJyk.KKw0qVem9dxPXTN.3wn/QuFqnYo5H5g1HfnyXM2IzjDmAjG', 'Manager', 'Operations', 'Asia/Dhaka'),
@@ -21,12 +15,11 @@ SET
   timezone = 'Asia/Dhaka'
 WHERE email IN ('manager@example.com', 'user@example.com');
 
-UPDATE users SET supervisor_id = (SELECT id FROM users WHERE email = 'manager@example.com')
+UPDATE users
+SET supervisor_id = (SELECT id FROM users WHERE email = 'manager@example.com')
 WHERE email = 'user@example.com';
 
 INSERT OR IGNORE INTO work_plans (user_id, date, activity, expected_output, priority, status, category)
 SELECT id, date('now'), 'Client onboarding', 'Onboarding checklist completed', 'high', 'in_progress', 'Operations'
-FROM users WHERE email = 'user@example.com';
-`;
-
-console.log(sql.trim());
+FROM users
+WHERE email = 'user@example.com';
