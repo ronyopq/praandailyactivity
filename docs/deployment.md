@@ -37,21 +37,26 @@ cd apps/api-worker
 wrangler deploy
 ```
 
-## 6) Deploy Next.js Frontend to Pages
-1. In `apps/web/.env.production`, set:
-```env
-NEXT_PUBLIC_API_BASE_URL=https://<your-api-domain>
-```
-2. Build:
-```bash
-cd apps/web
-corepack pnpm build
-```
-3. Deploy `apps/web` via Cloudflare Pages Git integration.
-   - Build command: `corepack pnpm --filter @smart-work-tracker/web build`
-   - Output: `.next`
+## 6) Deploy Frontend to Cloudflare Pages (Git Connected)
+Set these values in Pages project settings:
 
-## 7) Production Verification Checklist
+- Production branch: `main`
+- Root directory: `/` (repo root)
+- Build command:
+  `corepack enable && corepack pnpm install --frozen-lockfile && corepack pnpm --filter @smart-work-tracker/web build`
+- Build output directory:
+  `apps/web/out`
+- Environment variable:
+  `NEXT_PUBLIC_API_BASE_URL=https://<your-api-domain>`
+
+Because this app is exported statically (`output: "export"`), Pages should serve from `apps/web/out`.
+
+## 7) Set API CORS/App Origin
+In Worker env vars/secrets, set:
+- `APP_ORIGIN=https://praandailyactivity.pages.dev`
+- `API_ORIGIN=https://<your-api-domain>`
+
+## 8) Production Verification Checklist
 - Register/login works and secure cookies are set.
 - Dashboard cards/charts return user data.
 - Work plans CRUD + import/export work.
